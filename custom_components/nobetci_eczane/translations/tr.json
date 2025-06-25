@@ -1,0 +1,47 @@
+{
+    "config": {
+        "step": {
+            "user": {
+                "title": "API Bilgilerini Girin",
+                "description": "Nöbetçi Eczane API bilgilerini ayarlamak için:\n\n1. {api_url} adresine gidin\n2. 'Ücretsiz Dene' butonuna tıklayın ve üye olun\n3. API anahtarınızı kopyalayın ve aşağıya yapıştırın\n\nNot: Ücretsiz plan günlük 100 istek hakkı vermektedir.",
+                "data": {
+                    "api_key": "API Anahtarı"
+                }
+            },
+            "location": {
+                "title": "Nöbetçi Eczane",
+                "description": "İl seçiniz",
+                "data": {
+                    "city": "İl"
+                }
+            },
+            "district": {
+                "title": "Nöbetçi Eczane - {city}",
+                "description": "İlçe ve günlük güncelleme saatini seçin",
+                "data": {
+                    "district": "İlçe",
+                    "update_hour": "Günlük güncelleme saati"
+                }
+            }
+        },
+        "error": {
+            "cannot_connect": "Bağlantı başarısız",
+            "invalid_auth": "Geçersiz kimlik doğrulama",
+            "unknown": "Beklenmeyen hata"
+        },
+        "abort": {
+            "already_configured": "Bu il/ilçe zaten yapılandırılmış"
+        }
+    },
+    "options": {
+        "step": {
+            "init": {
+                "title": "Nöbetçi Eczane Ayarları",
+                "description": "Günlük güncelleme saatini değiştirin",
+                "data": {
+                    "update_hour": "Günlük güncelleme saati"
+                }
+            }
+        }
+    }
+}
