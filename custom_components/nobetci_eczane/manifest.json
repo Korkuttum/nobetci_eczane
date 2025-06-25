@@ -1,0 +1,11 @@
+{
+  "domain": "nobetci_eczane",
+  "name": "Nöbetçi Eczane",
+  "version": "1.0.0",
+  "config_flow": true,
+  "documentation": "https://github.com/your_username/nobetci_eczane",
+  "dependencies": [],
+  "codeowners": ["@Korkuttum"],
+  "requirements": ["aiohttp", "async_timeout"],
+  "iot_class": "cloud_polling"
+}
