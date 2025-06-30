@@ -241,8 +241,8 @@ class NobetciEczaneSensor(CoordinatorEntity, SensorEntity):
         self._attr_device_info = {
             "identifiers": {(DOMAIN, f"{city}_{district if district else 'all'}")},
             "name": f"Nöbetçi Eczaneler - {city}/{district if district else 'Tümü'}",
-            "manufacturer": "CollectAPI",
-            "model": "Pharmacy API",
+            "manufacturer": "Nöbetçi Eczane",
+            "model": "Nöbetçi Eczane",
             "sw_version": "1.0",
             "via_device": (DOMAIN, f"{city}_{district if district else 'all'}"),
         }
