@@ -3,7 +3,7 @@
         "step": {
             "user": {
                 "title": "API Bilgilerini Girin",
-                "description": "Nöbetçi Eczane API bilgilerini ayarlamak için:\n\n1. {api_url} adresine gidin\n2. 'Ücretsiz Dene' butonuna tıklayın ve üye olun\n3. API anahtarınızı kopyalayın ve aşağıya yapıştırın\n\nNot: Ücretsiz plan günlük 100 istek hakkı vermektedir.",
+                "description": "Nöbetçi Eczane API bilgilerini ayarlamak için:\n\n1. {api_url} adresine gidin\n2. 'Ücretsiz Dene' butonuna tıklayın ve üye olun\n3. API anahtarınızı kopyalayın ve aşağıya yapıştırın\n\nNot: Ücretsiz plan aylık 100 istek hakkı vermektedir.",
                 "data": {
                     "api_key": "API Anahtarı"
                 }
