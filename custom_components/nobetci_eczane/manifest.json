@@ -1,6 +1,6 @@
 {
   "domain": "nobetci_eczane",
-  "name": "nobetci_eczane",
+  "name": "Nöbetçi Eczane",
   "codeowners": ["@Korkuttum"],
   "config_flow": true,
   "documentation": "https://github.com/your_username/nobetci_eczane",
