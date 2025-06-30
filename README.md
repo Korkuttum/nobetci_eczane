@@ -1,4 +1,9 @@
+
 # Nöbetçi Eczane Home Assistant Entegrasyonu
+
+<p align="left">
+  <img src="https://raw.githubusercontent.com/home-assistant/brands/58d28a95484f3f9208ed1c4968886ac6d2c435bd/custom_integrations/nobetci_eczane/logo%402x.png" alt="Blynk Logo" width="300"/>
+</p>
 
 Türkiye genelinde il ve ilçe bazlı nöbetçi eczaneleri Home Assistant arayüzünüzde gösteren özel bir entegrasyondur. Eczane adı, adresi ve iletişim bilgileri gibi verilere kolayca erişebilirsiniz.
 
