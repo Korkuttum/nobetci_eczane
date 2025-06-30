@@ -3,10 +3,10 @@
   "name": "Nöbetçi Eczane",
   "codeowners": ["@Korkuttum"],
   "config_flow": true,
-  "documentation": "https://github.com/your_username/nobetci_eczane",
+  "documentation": "https://github.com/korkuttum/nobetci_eczane",
   "integration_type": "device",
   "iot_class": "cloud_polling",
-  "issue_tracker": "https://github.com/your_username/nobetci_eczane/issues",
+  "issue_tracker": "https://github.com/korkuttum/nobetci_eczane/issues",
   "requirements": ["requests>=2.25.0"],
-  "version": "1.0.2"
+  "version": "1.0.3"
 }
