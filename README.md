@@ -21,6 +21,8 @@ API anahtarınızı aldıktan sonra yapılandırma sırasında girmeniz gerekmek
 
 ## Kurulum
 
+[![Home Assistant ile HACS üzerinden bu entegrasyonu ekle](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Korkuttum&repository=nobetci_eczane&category=integration)
+
 ### Yöntem 1: HACS ile Kolay Kurulum (Önerilir)
 
 1. [HACS](https://hacs.xyz/) eklentisinin Home Assistant’ınızda kurulu olduğundan emin olun.
