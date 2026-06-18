@@ -6,19 +6,18 @@ DOMAIN = "nobetci_eczane"
 CONF_CITY = "city"
 CONF_DISTRICT = "district"
 CONF_API_KEY = "api_key"
-CONF_UPDATE_INTERVAL = "update_interval"
-CONF_UPDATE_HOUR = "update_hour"
-
-DEFAULT_UPDATE_INTERVAL = timedelta(minutes=30)
-DEFAULT_UPDATE_HOUR = 8
+CONF_LAST_SUCCESS_HOUR = "last_success_hour"
 
 DEFAULT_NAME = "Nöbetçi Eczane"
 DEFAULT_ICON = "mdi:medical-bag"
 
-API_URL = "https://api.collectapi.com/health/dutyPharmacy"
+API_URL = "https://www.nosyapi.com/apiv2/service/pharmacies-on-duty"
 API_HEADERS_CONTENT_TYPE = "application/json"
 
-ATTRIBUTION = "Data provided by CollectAPI"
+ATTRIBUTION = "Data provided by NosyAPI"
+
+# NosyAPI güncelleme saatleri + 5 dakika
+NOSYAPI_UPDATE_TIMES = ["09:05", "10:05", "11:05", "13:05", "15:05", "17:05", "19:35"]
 
 ATTR_NAME = "name"
 ATTR_ADDRESS = "address"
