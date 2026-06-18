@@ -5,7 +5,6 @@ from homeassistant.core import callback
 import json
 import os
 import aiohttp
-from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
 from .const import (
@@ -13,76 +12,60 @@ from .const import (
     CONF_CITY,
     CONF_DISTRICT,
     CONF_API_KEY,
-    CONF_UPDATE_HOUR,
-    DEFAULT_UPDATE_HOUR,
-    API_URL
+    API_URL,
 )
 
-def load_cities_data():
-    """Load cities and districts data from JSON file."""
-    try:
+
+async def async_load_cities_data(hass) -> dict:
+    """Load cities and districts data from JSON file — executor'da çalıştır."""
+    def _load():
         current_dir = os.path.dirname(os.path.realpath(__file__))
         json_path = os.path.join(current_dir, 'il-ilce.json')
-        
         with open(json_path, 'r', encoding='utf-8') as f:
             data = json.load(f)
-        
-        # İl listesini oluştur
-        cities = {city['il_adi']: [ilce['ilce_adi'] for ilce in city['ilceler']] for city in data}
-        return cities
+        return {city['il_adi']: [ilce['ilce_adi'] for ilce in city['ilceler']] for city in data}
+
+    try:
+        return await hass.async_add_executor_job(_load)
     except Exception as e:
         print(f"JSON dosyası yüklenemedi: {e}")
         return {}
 
-def format_hour(hour):
-    """Format hour as HH:00."""
-    return f"{hour:02d}:00"
-
-def get_hours_list():
-    """Get list of hours in HH:00 format."""
-    return [format_hour(h) for h in range(24)]
 
 class NobetciEczaneConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     """Handle a config flow for Nöbetçi Eczane."""
 
     VERSION = 1
-    
+
     def __init__(self):
         """Initialize flow."""
-        self.cities_data = load_cities_data()
+        self.cities_data = {}
         self.selected_city = None
         self._api_key = None
 
     async def _test_api(self, api_key: str) -> bool:
-        """Test API connection."""
+        """Test NosyAPI connection."""
         session = async_get_clientsession(self.hass)
-        headers = {
-            "content-type": "application/json",
-            "authorization": f"apikey {api_key}"
-        }
-        params = {
-            "il": "istanbul"
-        }
-
+        params = {"apiKey": api_key, "city": "istanbul"}
         try:
-            async with session.get(
-                API_URL,
-                headers=headers,
-                params=params,
-            ) as response:
+            async with session.get(API_URL, params=params) as response:
                 if response.status == 401:
                     raise InvalidAuth
                 if response.status != 200:
                     raise CannotConnect
-                await response.json()
+                data = await response.json()
+                if data.get("status") != "success":
+                    raise InvalidAuth
                 return True
         except aiohttp.ClientError:
             raise CannotConnect
-        except Exception:
+        except (InvalidAuth, CannotConnect):
             raise
+        except Exception:
+            raise CannotConnect
 
     async def async_step_user(self, user_input=None):
-        """Handle the initial step."""
+        """Handle the initial step — API key."""
         errors = {}
 
         if user_input is not None:
@@ -94,7 +77,7 @@ class NobetciEczaneConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 errors["base"] = "cannot_connect"
             except InvalidAuth:
                 errors["base"] = "invalid_auth"
-            except Exception:  # pylint: disable=broad-except
+            except Exception:
                 errors["base"] = "unknown"
 
         return self.async_show_form(
@@ -104,13 +87,17 @@ class NobetciEczaneConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             }),
             errors=errors,
             description_placeholders={
-                "api_url": "https://collectapi.com/tr/api/health/nobetci-eczane-api"
+                "api_url": "https://www.nosyapi.com/api/nobetci-eczane"
             },
         )
 
     async def async_step_location(self, user_input=None):
         """Handle the city selection step."""
         errors = {}
+
+        # İl listesini async olarak yükle
+        if not self.cities_data:
+            self.cities_data = await async_load_cities_data(self.hass)
 
         if user_input is not None:
             self.selected_city = user_input[CONF_CITY]
@@ -130,7 +117,6 @@ class NobetciEczaneConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
 
         if user_input is not None:
             district = user_input[CONF_DISTRICT]
-            update_hour = int(user_input[CONF_UPDATE_HOUR].split(":")[0])
 
             await self.async_set_unique_id(f"{self.selected_city}_{district}")
             self._abort_if_unique_id_configured()
@@ -141,7 +127,6 @@ class NobetciEczaneConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                     CONF_API_KEY: self._api_key,
                     CONF_CITY: self.selected_city,
                     CONF_DISTRICT: district,
-                    CONF_UPDATE_HOUR: update_hour
                 },
             )
 
@@ -149,7 +134,6 @@ class NobetciEczaneConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
             step_id="district",
             data_schema=vol.Schema({
                 vol.Required(CONF_DISTRICT): vol.In(self.cities_data[self.selected_city]),
-                vol.Required(CONF_UPDATE_HOUR, default=format_hour(DEFAULT_UPDATE_HOUR)): vol.In(get_hours_list()),
             }),
             errors=errors,
             description_placeholders={"city": self.selected_city},
@@ -158,37 +142,8 @@ class NobetciEczaneConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
     @staticmethod
     @callback
     def async_get_options_flow(config_entry):
-        """Get the options flow."""
-        return OptionsFlowHandler(config_entry)
-
-
-class OptionsFlowHandler(config_entries.OptionsFlow):
-    """Handle options flow for Nobetci Eczane."""
-
-    def __init__(self, config_entry):
-        """Initialize options flow."""
-        self.config_entry = config_entry
-
-    async def async_step_init(self, user_input=None):
-        """Manage the options."""
-        if user_input is not None:
-            update_hour = int(user_input[CONF_UPDATE_HOUR].split(":")[0])
-            return self.async_create_entry(
-                title="",
-                data={CONF_UPDATE_HOUR: update_hour},
-            )
-
-        current_hour = self.config_entry.data.get(CONF_UPDATE_HOUR, DEFAULT_UPDATE_HOUR)
-
-        return self.async_show_form(
-            step_id="init",
-            data_schema=vol.Schema({
-                vol.Required(
-                    CONF_UPDATE_HOUR,
-                    default=format_hour(current_hour)
-                ): vol.In(get_hours_list()),
-            }),
-        )
+        """Options flow yok."""
+        return None
 
 
 class CannotConnect(Exception):
