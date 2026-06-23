@@ -14,7 +14,7 @@ jobs:
           cd ${{ github.workspace }}/custom_components/nobetci_eczane
           zip -r nobetci_eczane.zip ./
       - name: Upload zip to release
-        uses: svenstaro/upload-release-action@v4
+        uses: svenstaro/upload-release-action@v5
         with:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.workspace }}/custom_components/nobetci_eczane/nobetci_eczane.zip
