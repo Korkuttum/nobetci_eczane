@@ -16,7 +16,7 @@ Türkiye genelinde il ve ilçe bazlı nöbetçi eczaneleri Home Assistant arayü
 
 ## Ön Koşul
 
-Bu entegrasyonu kullanabilmek için [https://collectapi.com/tr/api/health/nobetci-eczane-api](https://collectapi.com/tr/api/health/nobetci-eczane-api) adresinden ücretsiz veya ücretli bir API anahtarı (apikey) almalısınız.  
+Bu entegrasyonu kullanabilmek için [https://www.nosyapi.com/api/nobetci-eczane](https://www.nosyapi.com/api/nobetci-eczane) adresinden ücretsiz veya ücretli bir API anahtarı (apikey) almalısınız.  
 API anahtarınızı aldıktan sonra yapılandırma sırasında girmeniz gerekmektedir.
 
 ## Kurulum
