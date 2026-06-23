@@ -1,9 +1,7 @@
 name: Release
-
 on:
   release:
     types: [published]
-
 jobs:
   release-zip:
     runs-on: ubuntu-latest
@@ -12,16 +10,14 @@ jobs:
     steps:
       - name: Checkout repo
         uses: actions/checkout@v5
-
       - name: ZIP component directory
         run: |
           cd ${{ github.workspace }}/custom_components/nobetci_eczane
           zip -r nobetci_eczane.zip ./
-
       - name: Upload zip to release
         uses: svenstaro/upload-release-action@v2
         with:
-          repo_token: ${{ secrets.PAT_TOKEN1 }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
           file: ${{ github.workspace }}/custom_components/nobetci_eczane/nobetci_eczane.zip
           asset_name: nobetci_eczane.zip
           tag: ${{ github.ref }}
