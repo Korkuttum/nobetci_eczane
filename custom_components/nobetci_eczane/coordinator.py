@@ -66,6 +66,18 @@ def get_update_times_today() -> list[datetime]:
     return times
 
 
+def is_calibration_day() -> bool:
+    """
+    Haftada bir gün (Pazartesi) zıplama mantığını devre dışı bırak.
+
+    Amaç: API'nin gerçek güncelleme saati zamanla kayabilir (ör. 10:05 -> 11:05).
+    Zıplama aktifken sistem sadece bilinen saati (last_success_hour) kontrol
+    ettiği için daha erken bir saatte oluşan değişikliği asla göremez.
+    Kalibrasyon gününde tüm saatler sırayla denenerek gerçek saat yeniden tespit edilir.
+    """
+    return dt_util.now().weekday() == 0  # 0 = Pazartesi
+
+
 def get_next_schedule(last_success_hour: str | None) -> datetime | None:
     """
     Bir sonraki kontrol zamanını hesapla.
@@ -148,9 +160,19 @@ class NobetciEczaneCoordinator(DataUpdateCoordinator):
 
     async def _schedule_next(self) -> None:
         """Bir sonraki kontrol zamanını hesaplayıp planla."""
-        next_time = get_next_schedule(self._last_success_hour)
+        # Kalibrasyon gününde zıplamayı iptal et — sırayla tüm saatler denenir
+        effective_last_success = (
+            None if is_calibration_day() else self._last_success_hour
+        )
+        next_time = get_next_schedule(effective_last_success)
         if next_time is None:
             return
+
+        if is_calibration_day() and self._last_success_hour is not None:
+            _LOGGER.debug(
+                "Nöbetçi Eczane %s/%s — kalibrasyon günü, zıplama iptal",
+                self.city, self.district
+            )
 
         _LOGGER.debug(
             "Nöbetçi Eczane %s/%s — sonraki kontrol: %s",
